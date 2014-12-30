@@ -27,16 +27,15 @@ public class MainActivity extends Activity {
     float[] smoothGraph = new float[1];
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         //Linear Layout:
-        LinearLayout l = (LinearLayout) findViewById(R.id.layout);
-        l.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout layout = (LinearLayout) findViewById(R.id.layout);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
         graph = new LineGraphView(getApplicationContext(),
                 100,
                 Arrays.asList("x", "y", "z"));
@@ -47,7 +46,7 @@ public class MainActivity extends Activity {
         //Graph Title:
         TextView graphtitle = new TextView(getApplicationContext());
         graphtitle.setText("\nAcceleration Graph:");
-        l.addView(graphtitle);
+        layout.addView(graphtitle);
 
         //TextView Initialize: Steps, North, East
         TextView steps = new TextView(getApplicationContext());
@@ -65,10 +64,10 @@ public class MainActivity extends Activity {
 
         //Initialization of TextViews:
 
-        l.addView(graph); //Displays graph
-        l.addView(steps); //Displays number of steps taken
-        l.addView(north); //Displays displacement in North direction
-        l.addView(east); //Displays displacement in East direction
+        layout.addView(graph); //Displays graph
+        layout.addView(steps); //Displays number of steps taken
+        layout.addView(north); //Displays displacement in North direction
+        layout.addView(east); //Displays displacement in East direction
 
     }  // End of OnCreate() Method
 
