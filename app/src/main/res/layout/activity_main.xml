@@ -20,7 +20,8 @@ android:layout_height="wrap_content">
         android:id="@+id/reset"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Reset All Steps" />
+        android:text="@string/reset_steps" />
+
 </LinearLayout>
 
 </ScrollView>
