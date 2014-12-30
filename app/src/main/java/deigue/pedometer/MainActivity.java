@@ -13,20 +13,19 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import deigue.pedometer.R;
 
-//Main Activity Class:
 public class MainActivity extends Activity {
 
-    //Graph, SensorManager
+    //Important Variables
     LineGraphView graph;
-    SensorManager sm;
+    SensorManager sensorManager;
     mSensorEventListener msel;
 
-    //Initialization Arrays,Variables:
-    float[] accel = new float[3];
+
+    float[] acceleration = new float[3];
     float[] rotation = new float[3];
-    float[] smoothgraph = new float[1];
+    float[] smoothGraph = new float[1];
+
 
 
     @Override
@@ -56,12 +55,12 @@ public class MainActivity extends Activity {
         TextView east = new TextView(getApplicationContext());
 
         //Sensor Manager and Listener initialise:  
-        sm = (SensorManager) getSystemService(SENSOR_SERVICE);
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         msel = new mSensorEventListener(steps, north, east, graph);
 
         //Listeners Registered:
-        sm.registerListener(msel, sm.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION), SensorManager.SENSOR_DELAY_FASTEST);
-        sm.registerListener(msel, sm.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR), SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(msel, sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION), SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(msel, sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR), SensorManager.SENSOR_DELAY_FASTEST);
 
 
         //Initialization of TextViews:
@@ -106,7 +105,7 @@ public class MainActivity extends Activity {
 
             switch (event.sensor.getType()) {
                 case Sensor.TYPE_LINEAR_ACCELERATION:
-                    accel = event.values.clone();
+                    acceleration = event.values.clone();
                     break;
                 case Sensor.TYPE_ROTATION_VECTOR:
                     rotation = event.values.clone();
@@ -123,7 +122,7 @@ public class MainActivity extends Activity {
 
             //Low Pass Filter Z-Axis Steps:
             float c = 14f;
-            float acceleration = accel[2];
+            float acceleration = MainActivity.this.acceleration[2];
             smoothaccel += (acceleration - smoothaccel) / c;
 
             //Reset Button Definition:
@@ -175,8 +174,8 @@ public class MainActivity extends Activity {
             }
 
             //Displays number of Steps:
-            smoothgraph[0] = smoothaccel;
-            G.addPoint(smoothgraph);
+            smoothGraph[0] = smoothaccel;
+            G.addPoint(smoothGraph);
             steps.setText(" ---Steps--- \n Steps: " + step);
 
             //Displays Displacement due North,East:
