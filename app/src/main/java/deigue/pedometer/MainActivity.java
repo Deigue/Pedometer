@@ -3,6 +3,7 @@ package deigue.pedometer;
 import java.util.Arrays;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TableRow.LayoutParams;
 
 
 public class MainActivity extends Activity {
@@ -38,7 +40,11 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Layout
         layout = (LinearLayout) findViewById(R.id.layout);
+        LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(0, 20, 0, 0);
 
         //Sensor Initializations:
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -49,19 +55,23 @@ public class MainActivity extends Activity {
         magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
 
-
-
-
         //Light Intensity Data:
         TextView lightView = new TextView(getApplicationContext());
         lightListener = new LightSensorEventListener(lightView);
         sensorManager.registerListener(lightListener, lightSensor, sensorManager.SENSOR_DELAY_NORMAL);
+        lightView.setTypeface(Typeface.DEFAULT_BOLD);
         layout.addView(lightView);
 
+
         //Rotation Vector Data:
+        TextView deviceOrientation = new TextView(getApplicationContext());
         TextView rotationView = new TextView(getApplicationContext());
+        deviceOrientation.setLayoutParams(layoutParams);
+        deviceOrientation.setText("Device Orientation: ");
         rotationListener = new RotationSensorEventListener(rotationView);
         sensorManager.registerListener(rotationListener, rotationSensor, sensorManager.SENSOR_DELAY_FASTEST);
+        deviceOrientation.setTypeface(Typeface.DEFAULT_BOLD);
+        layout.addView(deviceOrientation);
         layout.addView(rotationView);
 
 
@@ -189,19 +199,19 @@ public class MainActivity extends Activity {
                 s1 = true;
             }
 
-            if ((s1 == true) && (smoothaccel > 0.012) && (smoothaccel < 0.19)) {
+            if ((s1) && (smoothaccel > 0.012) && (smoothaccel < 0.19)) {
                 s2 = true;
             }
 
-            if ((s1 == true) && (s2 == true) && (smoothaccel < (-0.1))) {
+            if ((s1) && (s2) && (smoothaccel < (-0.1))) {
                 s3 = true;
             }
 
-            if ((s1 == true) && (s2 == true) && (s3 == true) && ((smoothaccel > (-0.1)) && (smoothaccel < (-0.02)))) {
+            if ((s1) && (s2) && (s3) && ((smoothaccel > (-0.1)) && (smoothaccel < (-0.02)))) {
                 s4 = true;
             }
 
-            if ((s1 == true) && (s2 == true) && (s3 == true) && (s4 == true)) {
+            if ((s1) && (s2) && (s3) && (s4)) {
                 s1 = false;
                 s2 = false;
                 s3 = false;
