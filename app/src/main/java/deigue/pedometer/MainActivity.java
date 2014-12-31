@@ -25,6 +25,7 @@ public class MainActivity extends Activity {
     Sensor lightSensor, rotationSensor, accelerometerSensor, magneticSensor;
     LightSensorEventListener lightListener;
     RotationSensorEventListener rotationListener;
+    MagneticSensorEventListener magneticListener;
 
 
 
@@ -74,6 +75,16 @@ public class MainActivity extends Activity {
         layout.addView(deviceOrientation);
         layout.addView(rotationView);
 
+        //Magnetic Data:
+        TextView magneticFieldStrength = new TextView(getApplicationContext());
+        TextView magneticView = new TextView(getApplicationContext());
+        magneticFieldStrength.setLayoutParams(layoutParams);
+        magneticFieldStrength.setText("Magnetic Field Strength: ");
+        magneticListener = new MagneticSensorEventListener(magneticView);
+        sensorManager.registerListener(magneticListener, magneticSensor, sensorManager.SENSOR_DELAY_FASTEST);
+        deviceOrientation.setTypeface(Typeface.DEFAULT_BOLD);
+        layout.addView(magneticFieldStrength);
+        layout.addView(magneticView);
 
         //Graph
         graph = new LineGraphView(getApplicationContext(),
