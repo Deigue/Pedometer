@@ -32,7 +32,7 @@ public class LineGraphView extends View {
     private Paint graphPaint = new Paint();
 
     private final int WIDTH = 600;
-    private final int HEIGHT = 300;
+    private final int HEIGHT = 600;
     private final int AXIS_WIDTH = 100;
 
     private float xScale, yScale;

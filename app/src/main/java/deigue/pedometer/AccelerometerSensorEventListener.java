@@ -61,7 +61,11 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
         for(int i=0; i<3; i++)
             smoothedAcceleration[i] += (accelerationData[i] - smoothedAcceleration[i])/alpha;
 
-        accelerationOutput.setText(smoothedAcceleration[0] + " " + smoothedAcceleration[1] + " " + smoothedAcceleration[2]);
+        accelerationOutput.setText(String.format("X: %.3f", smoothedAcceleration[0]) + String.format("  Y: %.3f", smoothedAcceleration[1]) + String.format("  Z: %.3f", smoothedAcceleration[2]));
+
+
+
+
         graphOutput.addPoint(smoothedAcceleration);
 
 
