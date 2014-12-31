@@ -63,19 +63,18 @@ public class MainActivity extends Activity {
         lightView.setTypeface(Typeface.DEFAULT_BOLD);
         layout.addView(lightView);
 
-
         //Rotation Vector Data:
-        TextView deviceOrientation = new TextView(getApplicationContext());
+        TextView rotationVectors = new TextView(getApplicationContext());
         TextView rotationView = new TextView(getApplicationContext());
-        deviceOrientation.setLayoutParams(layoutParams);
-        deviceOrientation.setText("Device Orientation: ");
+        rotationVectors.setLayoutParams(layoutParams);
+        rotationVectors.setText("Rotation Vectors: ");
         rotationListener = new RotationSensorEventListener(rotationView);
         sensorManager.registerListener(rotationListener, rotationSensor, sensorManager.SENSOR_DELAY_FASTEST);
-        deviceOrientation.setTypeface(Typeface.DEFAULT_BOLD);
-        layout.addView(deviceOrientation);
+        rotationVectors.setTypeface(Typeface.DEFAULT_BOLD);
+        layout.addView(rotationVectors);
         layout.addView(rotationView);
 
-        //Magnetic Data:
+        //Magnetic Field Strength Data:
         TextView magneticFieldStrength = new TextView(getApplicationContext());
         TextView magneticView = new TextView(getApplicationContext());
         magneticFieldStrength.setLayoutParams(layoutParams);
@@ -86,10 +85,7 @@ public class MainActivity extends Activity {
         layout.addView(magneticFieldStrength);
         layout.addView(magneticView);
 
-        //Graph
-        graph = new LineGraphView(getApplicationContext(),
-                100,
-                Arrays.asList("x", "y", "z"));
+        graph = new LineGraphView(getApplicationContext(), 100, Arrays.asList("X", "Y", "Z"));
 
 
         /*
@@ -98,9 +94,6 @@ public class MainActivity extends Activity {
         graphtitle.setText("\nAcceleration Graph:");
         layout.addView(graphtitle);
         */
-
-
-
         graph.setVisibility(View.VISIBLE);
 
         //TextView Initialize: Steps, North, East
@@ -110,7 +103,6 @@ public class MainActivity extends Activity {
 
         mSensorEventListener msel;
         //Sensor Manager and Listener initialise:  
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         msel = new mSensorEventListener(steps, north, east, graph);
 
         //Listeners Registered:
@@ -127,15 +119,24 @@ public class MainActivity extends Activity {
 
     }  // End of OnCreate() Method
 
+
     @Override
     protected void onResume() {
         super.onResume();
+        sensorManager.registerListener(lightListener, lightSensor, sensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(rotationListener, rotationSensor, sensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(magneticListener, magneticSensor, sensorManager.SENSOR_DELAY_FASTEST);
     }
+
 
     @Override
     protected void onPause() {
         super.onPause();
+        sensorManager.unregisterListener(lightListener);
+        sensorManager.unregisterListener(rotationListener);
+        sensorManager.unregisterListener(magneticListener);
     }
+
 
     //Sensor Listener Class Definition:
     class mSensorEventListener implements SensorEventListener {
@@ -148,7 +149,7 @@ public class MainActivity extends Activity {
         boolean s1, s2, s3, s4 = false;
 
         float[] ROTATION = new float[9]; // Rotation Matrix
-        float[] ORIENT = new float[3]; //Orientation Matrix
+        float[] orientationData = new float[3]; //Orientation Matrix
 
         public mSensorEventListener(TextView steps, TextView n, TextView e, LineGraphView graph) {
 
@@ -182,7 +183,7 @@ public class MainActivity extends Activity {
 
             //Get Orientation:
             SensorManager.getRotationMatrixFromVector(ROTATION, rotationData);
-            SensorManager.getOrientation(ROTATION, ORIENT);
+            SensorManager.getOrientation(ROTATION, orientationData);
 
             //Low Pass Filter Z-Axis Steps:
             float c = 14f;
@@ -231,10 +232,10 @@ public class MainActivity extends Activity {
 
 
                 //Calculate Steps Walked North:
-                ns = ns + (double) Math.cos(ORIENT[0]);
+                ns = ns + (double) Math.cos(orientationData[0]);
 
                 //Calculate Steps Walked East:
-                ew = ew + (double) Math.sin(ORIENT[0]);
+                ew = ew + (double) Math.sin(orientationData[0]);
             }
 
             //Displays number of Steps:
