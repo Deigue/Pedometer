@@ -16,14 +16,13 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
-    //Important Variables
+    //Graph Initialization:
     LineGraphView graph;
-    SensorManager sensorManager;
-    mSensorEventListener msel;
 
 
-    float[] acceleration = new float[3];
-    float[] rotation = new float[3];
+
+    float[] accelerationData = new float[3];
+    float[] rotationData = new float[3];
     float[] smoothGraph = new float[1];
 
 
@@ -31,6 +30,14 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //Sensor Initializations:
+        SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        Sensor lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        Sensor accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        Sensor rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        Sensor magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        mSensorEventListener msel;
 
         //Linear Layout:
         LinearLayout layout = (LinearLayout) findViewById(R.id.layout);
@@ -104,10 +111,10 @@ public class MainActivity extends Activity {
 
             switch (event.sensor.getType()) {
                 case Sensor.TYPE_LINEAR_ACCELERATION:
-                    acceleration = event.values.clone();
+                    accelerationData = event.values.clone();
                     break;
                 case Sensor.TYPE_ROTATION_VECTOR:
-                    rotation = event.values.clone();
+                    rotationData = event.values.clone();
                     break;
             }
 
@@ -116,12 +123,12 @@ public class MainActivity extends Activity {
 
 
             //Get Orientation:
-            SensorManager.getRotationMatrixFromVector(ROTATION, rotation);
+            SensorManager.getRotationMatrixFromVector(ROTATION, rotationData);
             SensorManager.getOrientation(ROTATION, ORIENT);
 
             //Low Pass Filter Z-Axis Steps:
             float c = 14f;
-            float acceleration = MainActivity.this.acceleration[2];
+            float acceleration = MainActivity.this.accelerationData[2];
             smoothaccel += (acceleration - smoothaccel) / c;
 
             //Reset Button Definition:
