@@ -11,15 +11,19 @@ import android.widget.TextView;
 public class RotationSensorEventListener implements SensorEventListener {
 
     TextView rotationOutput;
+    float[] rotation = new float[3];
 
     public RotationSensorEventListener(TextView outputView){
         rotationOutput = outputView;
+
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
 
         if(event.sensor.getType()==Sensor.TYPE_ROTATION_VECTOR){
+
+            rotation = event.values;
 
             rotationOutput.setText("X axis: " + (String.format("%.2f", event.values[0]))
                     + "                Y axis: " + (String.format("%.2f", event.values[1]))
