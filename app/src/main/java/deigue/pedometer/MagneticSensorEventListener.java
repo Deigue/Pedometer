@@ -22,8 +22,8 @@ public class MagneticSensorEventListener implements SensorEventListener {
         if(event.sensor.getType()==Sensor.TYPE_MAGNETIC_FIELD){
 
             magneticOutput.setText("X axis: " + (String.format("%.2f", event.values[0]))
-                    + "                     Y axis: " + (String.format("%.2f", event.values[1]))
-                    + "                     Z axis: " + (String.format("%.2f", event.values[2])));
+                    + "                Y axis: " + (String.format("%.2f", event.values[1]))
+                    + "                Z axis: " + (String.format("%.2f", event.values[2])));
 
         }
     }
