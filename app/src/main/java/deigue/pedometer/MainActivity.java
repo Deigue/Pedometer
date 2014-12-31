@@ -16,21 +16,16 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
-    //Graph Initialization:
+    //Initializations:
+    LinearLayout layout;
     LineGraphView graph;
-
-    //Sensor Initializations:
-    SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
-    Sensor lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-    Sensor accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-    Sensor rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
-    Sensor magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-
+    SensorManager sensorManager;
+    Sensor lightSensor, rotationSensor, accelerometerSensor, magneticSensor;
     LightSensorEventListener lightListener;
+    RotationSensorEventListener rotationListener;
 
 
-    //---UP CLEAN ^^^
+
 
     float[] accelerationData = new float[3];
     float[] rotationData = new float[3];
@@ -43,15 +38,31 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        layout = (LinearLayout) findViewById(R.id.layout);
 
-        //Activity Layout
-        LinearLayout layout = (LinearLayout) findViewById(R.id.layout);
+        //Sensor Initializations:
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
-        TextView lightIntensity = new TextView(getApplicationContext());
-        lightListener = new LightSensorEventListener(lightIntensity);
-        sensorManager.registerListener(lightListener,lightSensor,sensorManager.SENSOR_DELAY_NORMAL);
-        layout.addView(lightIntensity);
+        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
+
+
+
+
+        //Light Intensity Data:
+        TextView lightView = new TextView(getApplicationContext());
+        lightListener = new LightSensorEventListener(lightView);
+        sensorManager.registerListener(lightListener, lightSensor, sensorManager.SENSOR_DELAY_NORMAL);
+        layout.addView(lightView);
+
+        //Rotation Vector Data:
+        TextView rotationView = new TextView(getApplicationContext());
+        rotationListener = new RotationSensorEventListener(rotationView);
+        sensorManager.registerListener(rotationListener, rotationSensor, sensorManager.SENSOR_DELAY_FASTEST);
+        layout.addView(rotationView);
 
 
         //Graph
@@ -95,21 +106,15 @@ public class MainActivity extends Activity {
 
     }  // End of OnCreate() Method
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //Unregister here
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //Re-Register here
-
-    }
-
-
 
     //Sensor Listener Class Definition:
     class mSensorEventListener implements SensorEventListener {
