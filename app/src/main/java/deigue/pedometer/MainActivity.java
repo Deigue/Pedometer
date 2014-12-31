@@ -19,10 +19,23 @@ public class MainActivity extends Activity {
     //Graph Initialization:
     LineGraphView graph;
 
+    //Sensor Initializations:
+    SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
+    Sensor lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+    Sensor accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+    Sensor rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+    Sensor magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+    LightSensorEventListener lightListener;
+
+
+    //---UP CLEAN ^^^
 
     float[] accelerationData = new float[3];
     float[] rotationData = new float[3];
+
+
     float[] smoothGraph = new float[1];
 
 
@@ -31,35 +44,39 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Sensor Initializations:
-        SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        Sensor lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        Sensor accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        Sensor rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
-        Sensor magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        mSensorEventListener msel;
-
-        //Linear Layout:
+        //Activity Layout
         LinearLayout layout = (LinearLayout) findViewById(R.id.layout);
-        layout.setOrientation(LinearLayout.VERTICAL);
 
+        TextView lightIntensity = new TextView(getApplicationContext());
+        lightListener = new LightSensorEventListener(lightIntensity);
+        sensorManager.registerListener(lightListener,lightSensor,sensorManager.SENSOR_DELAY_NORMAL);
+        layout.addView(lightIntensity);
+
+
+
+        //Graph
         graph = new LineGraphView(getApplicationContext(),
                 100,
                 Arrays.asList("x", "y", "z"));
 
-        //Enables the Graph to be visible
-        graph.setVisibility(View.VISIBLE);
 
+        /*
         //Graph Title:
         TextView graphtitle = new TextView(getApplicationContext());
         graphtitle.setText("\nAcceleration Graph:");
         layout.addView(graphtitle);
+        */
+
+
+
+        graph.setVisibility(View.VISIBLE);
 
         //TextView Initialize: Steps, North, East
         TextView steps = new TextView(getApplicationContext());
         TextView north = new TextView(getApplicationContext());
         TextView east = new TextView(getApplicationContext());
 
+        mSensorEventListener msel;
         //Sensor Manager and Listener initialise:  
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         msel = new mSensorEventListener(steps, north, east, graph);
@@ -77,6 +94,21 @@ public class MainActivity extends Activity {
         layout.addView(east); //Displays displacement in East direction
 
     }  // End of OnCreate() Method
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //Unregister here
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //Re-Register here
+
+    }
+
 
 
     //Sensor Listener Class Definition:
