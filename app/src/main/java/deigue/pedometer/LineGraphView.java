@@ -20,7 +20,7 @@ public class LineGraphView extends View {
 
     private List<Paint> linePaints = new ArrayList<Paint>();
 
-    public final int[] defalutColors = {0xffff0000,
+    public final int[] defaultColors = {0xffff0000,
             0xff00ff00,
             0xff0000ff,
             0xff000000,
@@ -31,8 +31,8 @@ public class LineGraphView extends View {
 
     private Paint graphPaint = new Paint();
 
-    private final int WIDTH = 400;
-    private final int HEIGHT = 400;
+    private final int WIDTH = 600;
+    private final int HEIGHT = 300;
     private final int AXIS_WIDTH = 100;
 
     private float xScale, yScale;
@@ -47,7 +47,7 @@ public class LineGraphView extends View {
      */
     public LineGraphView(Context context, int dataWidth, List<String> labels) {
         super(context);
-        setBackgroundColor(0xffeeeeee);
+        setBackgroundColor(0xff8f8f8f);
 
         for (int i = 0; i < labels.size(); i++)
             linePaints.add(new Paint());
@@ -55,7 +55,7 @@ public class LineGraphView extends View {
         maxDataWidth = dataWidth;
         this.labels = labels;
 
-        setColors(defalutColors);
+        setColors(defaultColors);
     }
 
     /**

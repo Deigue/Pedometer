@@ -82,7 +82,7 @@ public class MainActivity extends Activity {
         magneticFieldStrength.setText("Magnetic Field Strength: ");
         magneticListener = new MagneticSensorEventListener(magneticView);
         sensorManager.registerListener(magneticListener, magneticSensor, sensorManager.SENSOR_DELAY_FASTEST);
-        deviceOrientation.setTypeface(Typeface.DEFAULT_BOLD);
+        magneticFieldStrength.setTypeface(Typeface.DEFAULT_BOLD);
         layout.addView(magneticFieldStrength);
         layout.addView(magneticView);
 
