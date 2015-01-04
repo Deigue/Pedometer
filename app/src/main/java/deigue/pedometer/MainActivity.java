@@ -8,6 +8,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TableRow.LayoutParams;
@@ -86,10 +87,16 @@ public class MainActivity extends Activity {
         TextView orientationView =  new TextView(getApplicationContext());
         TextView accelerationView =  new TextView(getApplicationContext());
         TextView accelerationMaxView = new TextView((getApplicationContext()));
+        TextView accelerationMinView = new TextView((getApplicationContext()));
+        TextView states = new TextView((getApplicationContext()));
+
+        final float[] max = new float[3];
+        final float[] min = new float[3];
+        int steps=0;
         deviceOrientation.setLayoutParams(layoutParams);
         deviceOrientation.setText("Device Orientation: ");
         graph = new LineGraphView(getApplicationContext(), 100, Arrays.asList("X", "Y", "Z"));
-        accelerationListener = new AccelerometerSensorEventListener(graph, orientationView, accelerationView,accelerationMaxView);
+        accelerationListener = new AccelerometerSensorEventListener(graph, orientationView, accelerationView,accelerationMaxView, max, accelerationMinView, min,steps, states);
         sensorManager.registerListener(accelerationListener, accelerometerSensor, sensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(accelerationListener, rotationSensor, sensorManager.SENSOR_DELAY_FASTEST);
         deviceOrientation.setTypeface(Typeface.DEFAULT_BOLD);
@@ -97,8 +104,27 @@ public class MainActivity extends Activity {
         layout.addView(orientationView);
         layout.addView(accelerationView);
         layout.addView(accelerationMaxView);
+        layout.addView(accelerationMinView);
+        TextView stepsDone = new TextView(getApplicationContext());
+        stepsDone.setText("Steps taken: "+steps);
+        layout.addView(stepsDone);
+        layout.addView(states);
         layout.addView(graph);
         graph.setVisibility(View.VISIBLE);
+
+        //Reset Button
+        Button Resets = (Button) findViewById(R.id.reset);
+        Resets.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                graph.purge();
+                for(int i=0; i <3; i ++){
+                    max[i] = 0;
+                    min[i] = 0;
+                }
+            }
+
+        });
 
 
 
