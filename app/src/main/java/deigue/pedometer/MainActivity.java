@@ -92,11 +92,11 @@ public class MainActivity extends Activity {
 
         final float[] max = new float[3];
         final float[] min = new float[3];
-        int steps=0;
+        TextView steps = new TextView((getApplicationContext()));
         deviceOrientation.setLayoutParams(layoutParams);
         deviceOrientation.setText("Device Orientation: ");
         graph = new LineGraphView(getApplicationContext(), 100, Arrays.asList("X", "Y", "Z"));
-        accelerationListener = new AccelerometerSensorEventListener(graph, orientationView, accelerationView,accelerationMaxView, max, accelerationMinView, min,steps, states);
+        accelerationListener = new AccelerometerSensorEventListener(graph, orientationView, accelerationView,accelerationMaxView, max, accelerationMinView, min, steps, states);
         sensorManager.registerListener(accelerationListener, accelerometerSensor, sensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(accelerationListener, rotationSensor, sensorManager.SENSOR_DELAY_FASTEST);
         deviceOrientation.setTypeface(Typeface.DEFAULT_BOLD);
@@ -105,10 +105,8 @@ public class MainActivity extends Activity {
         layout.addView(accelerationView);
         layout.addView(accelerationMaxView);
         layout.addView(accelerationMinView);
-        TextView stepsDone = new TextView(getApplicationContext());
-        stepsDone.setText("Steps taken: "+steps);
-        layout.addView(stepsDone);
         layout.addView(states);
+        layout.addView(steps);
         layout.addView(graph);
         graph.setVisibility(View.VISIBLE);
 

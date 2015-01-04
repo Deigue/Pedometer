@@ -4,10 +4,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
-import android.app.Activity;
 
 /**
  * Created by Deigue on 12/31/2014.
@@ -23,7 +20,8 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
     float[] rotationVectors = new float[3];
     float[] rotationMatrix = new float[9];
     float[] orientationVectors = new float[3];
-    int steps=0;
+    int steps= 0;
+    float[] smoothedAcceleration = new float[]{0f, 0f, 0f};
 
     float[] accelerationMax = new float[]{0f, 0f, 0f};
     float[] accelerationMin = new  float[]{0f, 0f, 0f};
@@ -33,12 +31,13 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
     TextView accelerationMaxOutput;
     TextView accelerationMinOutput;
     TextView states;
+    TextView stepsDone;
 
 
     boolean state1, state2, state3, state4 = false;
 
     public AccelerometerSensorEventListener(LineGraphView graph, TextView orientationVectors, TextView acceleration,
-                                            TextView accelerationMax1, float[] accelerationMaximums, TextView accelerationMin1, float[] accelerationMinimums, int stepsTaken, TextView currstate) {
+                                            TextView accelerationMax1, float[] accelerationMaximums, TextView accelerationMin1, float[] accelerationMinimums, TextView stepsTaken, TextView currstate) {
 
         graphOutput = graph;
         orientationOutput = orientationVectors;
@@ -47,7 +46,7 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
         accelerationMax = accelerationMaximums;
         accelerationMinOutput = accelerationMin1;
         accelerationMin = accelerationMinimums;
-        steps = stepsTaken;
+        stepsDone = stepsTaken;
         states = currstate;
     }
 
@@ -72,7 +71,7 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
                 + "           Roll(Z): " + (String.format("%.3f", orientationVectors[2])));
 
 
-        float[] smoothedAcceleration = new float[]{0f, 0f, 0f};
+
         float alpha = 11.0f;
         for (int i = 0; i < 3; i++)
             smoothedAcceleration[i] += (accelerationData[i] - smoothedAcceleration[i]) / alpha;
@@ -80,19 +79,19 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
         accelerationOutput.setText(String.format("X: %.3f", smoothedAcceleration[0]) + String.format("  Y: %.3f", smoothedAcceleration[1]) + String.format("  Z: %.3f", smoothedAcceleration[2]));
 
 
-        if (accelerationData[0] > accelerationMax[0])
-            accelerationMax[0] = accelerationData[0];
-        if (accelerationData[1] > accelerationMax[1])
-            accelerationMax[1] = accelerationData[1];
-        if (accelerationData[2] > accelerationMax[2])
-            accelerationMax[2] = accelerationData[2];
+        if (smoothedAcceleration[0] > accelerationMax[0])
+            accelerationMax[0] = smoothedAcceleration[0];
+        if (smoothedAcceleration[1] > accelerationMax[1])
+            accelerationMax[1] = smoothedAcceleration[1];
+        if (smoothedAcceleration[2] > accelerationMax[2])
+            accelerationMax[2] = smoothedAcceleration[2];
 
-        if (accelerationData[0] < accelerationMin[0])
-            accelerationMin[0] = accelerationData[0];
-        if (accelerationData[1] < accelerationMin[1])
-            accelerationMin[1] = accelerationData[1];
-        if (accelerationData[2] < accelerationMin[2])
-            accelerationMin[2] = accelerationData[2];
+        if (smoothedAcceleration[0] < accelerationMin[0])
+            accelerationMin[0] = smoothedAcceleration[0];
+        if (smoothedAcceleration[1] < accelerationMin[1])
+            accelerationMin[1] = smoothedAcceleration[1];
+        if (smoothedAcceleration[2] < accelerationMin[2])
+            accelerationMin[2] = smoothedAcceleration[2];
 
         accelerationMaxOutput.setText(String.format("X: %.3f", accelerationMax[0]) + String.format("  Y: %.3f", accelerationMax[1]) + String.format("  Z: %.3f", accelerationMax[2]));
         accelerationMinOutput.setText(String.format("X: %.3f", accelerationMin[0]) + String.format("  Y: %.3f", accelerationMin[1]) + String.format("  Z: %.3f", accelerationMin[2]));
@@ -108,23 +107,23 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
         //Screen is approximately facing upwards.
         if((pitch<0.75)&&(roll<0.75)){
 
-            if((-0.5<=accelerationData[0])&&(accelerationData[0]<=0.35)&&
-                    (-0.5<=accelerationData[1])&&(accelerationData[1]<= 0.45)&&
-                    (-1.35<=accelerationData[2])&&(accelerationData[2]<=-0.1))
+            if((-0.4<=smoothedAcceleration[0])&&(smoothedAcceleration[0]<0.45)&&
+                    (-0.6<=smoothedAcceleration[1])&&(smoothedAcceleration[1]< 0.6)&&
+                    (-1.6<=smoothedAcceleration[2])&&(smoothedAcceleration[2]<0))
                 state1=true;
-            if((0.4<=accelerationData[0])&&(accelerationData[0]<=1.7)&&
-                    (0.6<=accelerationData[1])&&(accelerationData[1]<= 2)&&
-                    (1.15<=accelerationData[2])&&(accelerationData[2]<=5)&&
+            if((0.45<=smoothedAcceleration[0])&&(smoothedAcceleration[0]<=1.2)&&
+                    (0.6<=smoothedAcceleration[1])&&(smoothedAcceleration[1]<= 1.2)&&
+                    (0.3<=smoothedAcceleration[2])&&(smoothedAcceleration[2]<=2.3)&&
                     state1)
                 state2=true;
-            if((-2.5<=accelerationData[0])&&(accelerationData[0]<=-0.65)&&
-                    (-2.6<=accelerationData[1])&&(accelerationData[1]<= -0.65)&&
-                    (-4<=accelerationData[2])&&(accelerationData[2]<=-1.95)&&
+            if((-1.5<=smoothedAcceleration[0])&&(smoothedAcceleration[0]< -0.4)&&
+                    (-2<=smoothedAcceleration[1])&&(smoothedAcceleration[1]< -0.6)&&
+                    (-2.7<=smoothedAcceleration[2])&&(smoothedAcceleration[2]<-1.6)&&
                     state2)
                 state3=true;
-            if((-0.5<=accelerationData[0])&&(accelerationData[0]<=0.35)&&
-                    (-0.5<=accelerationData[1])&&(accelerationData[1]<= 0.45)&&
-                    (-1.35<=accelerationData[2])&&(accelerationData[2]<=-0.1)&&
+            if((-0.4<=smoothedAcceleration[0])&&(smoothedAcceleration[0]<0.45)&&
+                    (-0.6<=smoothedAcceleration[1])&&(smoothedAcceleration[1]< 0.6)&&
+                    (-1.6<=smoothedAcceleration[2])&&(smoothedAcceleration[2]<0)&&
                     state3)
                 state4=true;
 
@@ -136,6 +135,7 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
         }
 
     states.setText(state1+ " " + state2 + " " + state3 + " " + state4);
+    stepsDone.setText("Steps taken: "+ steps);
 
 
     /*
