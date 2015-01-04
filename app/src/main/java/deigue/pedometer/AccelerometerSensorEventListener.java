@@ -18,18 +18,23 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
     float[] rotationMatrix = new float[9];
     float[] orientationVectors = new float[3];
 
+    float[] accelerationMax = new float[]{0f,0f,0f};
+
     TextView orientationOutput;
     TextView accelerationOutput;
+    TextView accelerationMaxOutput;
 
 
 
     boolean s1,s2,s3,s4 = false;
 
-    public AccelerometerSensorEventListener(LineGraphView graph, TextView orientationVectors, TextView acceleration){
+    public AccelerometerSensorEventListener(LineGraphView graph, TextView orientationVectors, TextView acceleration,
+                                            TextView accelerationMax){
 
         graphOutput = graph;
         orientationOutput = orientationVectors;
         accelerationOutput = acceleration;
+        accelerationMaxOutput = accelerationMax;
     }
 
 
@@ -62,6 +67,18 @@ public class AccelerometerSensorEventListener implements SensorEventListener {
             smoothedAcceleration[i] += (accelerationData[i] - smoothedAcceleration[i])/alpha;
 
         accelerationOutput.setText(String.format("X: %.3f", smoothedAcceleration[0]) + String.format("  Y: %.3f", smoothedAcceleration[1]) + String.format("  Z: %.3f", smoothedAcceleration[2]));
+
+
+        if(accelerationData[0]>accelerationMax[0])
+            accelerationMax[0] = accelerationData[0];
+        if(accelerationData[1]>accelerationMax[1])
+            accelerationMax[1] = accelerationData[1];
+        if(accelerationData[2]>accelerationMax[2])
+            accelerationMax[2] = accelerationData[2];
+
+        accelerationMaxOutput.setText(String.format("X: %.3f", accelerationMax[0]) + String.format("  Y: %.3f", accelerationMax[1]) + String.format("  Z: %.3f", accelerationMax[2]));
+
+
 
 
 

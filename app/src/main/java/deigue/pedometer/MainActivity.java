@@ -43,12 +43,12 @@ public class MainActivity extends Activity {
         //Sensor Initializations:
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
-        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+      //  lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
         accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+       // magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
-
+/*
 
         //Light Intensity Data:
         TextView lightView = new TextView(getApplicationContext());
@@ -79,20 +79,24 @@ public class MainActivity extends Activity {
         layout.addView(magneticFieldStrength);
         layout.addView(magneticView);
 
+*/
+
         //ACCELERATION ROTATION ACCESS TEST:
         TextView deviceOrientation = new TextView(getApplicationContext());
         TextView orientationView =  new TextView(getApplicationContext());
         TextView accelerationView =  new TextView(getApplicationContext());
+        TextView accelerationMaxView = new TextView((getApplicationContext()));
         deviceOrientation.setLayoutParams(layoutParams);
         deviceOrientation.setText("Device Orientation: ");
         graph = new LineGraphView(getApplicationContext(), 100, Arrays.asList("X", "Y", "Z"));
-        accelerationListener = new AccelerometerSensorEventListener(graph, orientationView, accelerationView);
+        accelerationListener = new AccelerometerSensorEventListener(graph, orientationView, accelerationView,accelerationMaxView);
         sensorManager.registerListener(accelerationListener, accelerometerSensor, sensorManager.SENSOR_DELAY_FASTEST);
         sensorManager.registerListener(accelerationListener, rotationSensor, sensorManager.SENSOR_DELAY_FASTEST);
         deviceOrientation.setTypeface(Typeface.DEFAULT_BOLD);
         layout.addView(deviceOrientation);
         layout.addView(orientationView);
         layout.addView(accelerationView);
+        layout.addView(accelerationMaxView);
         layout.addView(graph);
         graph.setVisibility(View.VISIBLE);
 
